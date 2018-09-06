@@ -1,60 +1,776 @@
 <!DOCTYPE html>
-<!--
-    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
-
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
-
 <head>
+    <title></title>
     <meta charset="utf-8" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="msapplication-tap-highlight" content="no" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
-    <!-- Good default declaration:
-    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-        * Enable inline JS: add 'unsafe-inline' to default-src
-        * Enable eval(): add 'unsafe-eval' to default-src
-    * Create your own at http://cspisawesome.com
-    -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />    
+    <link href="styles/plugins/jquery.datetimepicker.css" rel="stylesheet" />
+    <link href="styles/plugins/inputs.css" rel="stylesheet" />
+    <link href="styles/plugins/pace.css" rel="stylesheet" />    
+    <link href="styles/plugins/sweetalert.css" rel="stylesheet" /> 
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.2.0/css/font-awesome.min.css" />
+    <link href="styles/main.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/validetta.css">
+    <script src="cordova.js"></script>
+    <script src="kendo/js/jquery.min.js"></script>
+    <script src="kendo/js/kendo.mobile.min.js"></script>    
+    <script src="scripts/plugins/jquery.datetimepicker.full.js"></script>
+    <script src="scripts/plugins/jquery.priceformat.min.js"></script>
+    <script src="scripts/plugins/validetta.min.js"></script>
+    <script src="scripts/plugins/classie.js"></script>
+    <script src="scripts/plugins/jSignature/jSignature.min.js"></script>
+    <script src="scripts/iniciarSesion.js"></script>     
+    <script src="scripts/sucursalContrato.js"></script>
+    <script src="scripts/contratante.js"></script>
+    <script src="scripts/verContrato.js"></script>
+    <script src="scripts/sincronizar.js"></script>
+    
+    <script src="scripts/plugins/pace.js"></script>
+    <script src="scripts/plugins/sweetalert.js"></script>
+    <script src="scripts/app.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
-    <title>Hello World</title>
 </head>
-
 <body>
-    <div class="app">
-        <h1>PhoneGap</h1>
-        <div id="deviceready" class="blink">
-            <p class="event listening">Connecting to Device</p>
-            <p class="event received">Device is Ready</p>
+      <!-- View Bienvenida -->
+    <div id="view-bienvenida" data-role="view"
+        data-transition="fade"
+        data-model="app.iniciarSesionService.viewModel">
+        <div id="logoBienvenida">
+            <img id="logo"src="images/Logo.png">
+        </div>
+        <form id="formulario-bienvenida">
+                <span class="input input--hideo">
+                    <input class="input__field input__field--hideo" placeholder="Usuario" type="text" id="usuarioLogin" />
+                    <label class="input__label input__label--hideo" for="usuarioLogin">
+                        <i class="fa fa-fw fa-user icon icon--hideo"></i>
+                        <span class="input__label-content input__label-content--hideo">Username</span>
+                    </label>
+                </span>
+            
+                <span class="input input--hideo">
+                    <input class="input__field input__field--hideo" type="password" placeholder="Contraseña" id="passwordLogin" />
+                    <label class="input__label input__label--hideo" for="passwordLogin">
+                        <i class="fa fa-fw fa-lock icon icon--hideo"></i>
+                        <span class="input__label-content input__label-content--hideo">Password</span>
+                    </label>
+                </span>
+                <input class="boton-sesion" type="submit" data-bind="click:iniciarSesion" value="Iniciar Sesión">
+            <!-- el boton de arriba es provicional para que cambie de pantalla<input type="submit" class="boton-primario" value="Ingresar">-->
+        </form>
+        
+        
+     </div>
+        <!-- View contratos -->
+    <div id="view-contratos" data-role="view"
+        data-transition="fade"        
+        data-title="Tus contratos"
+        data-model="app.contratanteService.viewModel"
+        data-show="app.contratanteService.viewModel.consultarContratos"
+        data-init="app.contratanteService.viewModel.descargarInfo"
+        data-hide="app.contratanteService.viewModel.esconderContratos">
+        <div data-role="header">
+           <div data-role="navbar">
+                <img class="icon_logoGC" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-bind="click:cerrarSesion" data-transition="fade" data-role="button" data-align="right"><img class="icon_right agregar_right off_icon" src="images/off.png"></a><a href="#view-tipo-sucursal" data-transition="fade" data-role="button" data-align="right"><img class="icon_right agregar_right" src="images/agregar.png"></a>
+            </div>
+            <div data-role="tabstrip" id="tabContratos">
+                <a href="#view-contratos" data-icon="globe">Sincronizados</a>
+                <a href="#view-guardados" data-icon="downloads">Locales</a>
+            </div>
+        </div>
+        <div class="centrado">
+            <p style="margin-top:10em;" class="sub_texto" id="no-contratos">Aun no existen contratos</p>         
+            <p style="margin-top:10em;" class="sub_texto" id="no-internet">No tienes una conexión a Internet</p>         
+            <div id="contListadoContratos"></div>
+         </div>
+     </div>
+    <script id="template_contratos" type="text/x-kendo-template">
+        <div class="afiliados_datos">
+            <p><img class="icon_text" src="images/chulo.png">#: id #</p>         
+        </div>
+        <p><img class="icon_text" src="images/calendario.png">#: fecha #</p>
+        <p><img class="icon_text" src="images/user.png">#: razon_social #</p>
+        <p><img class="icon_text" src="images/id.png">#: numero_de_documento #</p>            
+        <a href="\#view-ver-contrato?id=#:id#">
+            <div class="integral">
+                <p class="integral_p">#: tipo_de_contrato #</p>
+                <div class="integral_next"><img class="icon_right" src="images/right.png"></div>
+            </div>
+        </a>
+        
+        
+    </script>
+    <div id="view-guardados" data-role="view"
+        data-transition="fade"        
+        data-title="Tus contratos"
+        data-model="app.contratanteService.viewModel"
+        data-show="app.contratanteService.viewModel.consultarContratosGuardados"
+        data-hide="app.contratanteService.viewModel.esconderContratosGuardados"> 
+        <div data-role="header">
+           <div data-role="navbar">
+                <img class="icon_logoGC" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-bind="click:cerrarSesion" data-transition="fade" data-role="button" data-align="right"><img class="icon_right agregar_right off_icon" src="images/off.png"></a><a href="#view-tipo-sucursal" data-transition="fade" data-role="button" data-align="right"><img class="icon_right agregar_right" src="images/agregar.png"></a>
+            </div>
+            <div data-role="tabstrip" id="tabContratos">
+                <a href="#view-contratos" data-icon="globe">Sincronizados</a>
+                <a href="#view-guardados" data-icon="downloads">Locales</a>
+            </div>
+        </div>
+        <div class="centrado" id>
+            <p style="margin-top:10em;" class="sub_texto" id="no-contratos">Aun no existen contratos</p>         
+            <div id="contListadoContratosGuardados"></div>
+         </div>
+     </div>
+    <script id="template_contratos_guardados" type="text/x-kendo-template">
+        <div class="afiliados_datos">
+            <p><img class="icon_text" src="images/chulo.png">#: consecutivo #</p>         
+        </div>
+        <p><img class="icon_text" src="images/calendario.png">12 Marzo</p>
+        <p><img class="icon_text" src="images/user.png">#: nombre #</p>
+        <p><img class="icon_text" src="images/id.png">#: numeroDocumento #</p>            
+        
+        <div class="integral">
+            <p class="integral_p">#: tipo_de_contrato #</p>
+            <div class="integral_next">
+                <button data-role="button" class="btn_sinc" id="#: consecutivo #" data-icon="upload" data-click="app.sincronizarService.viewModel.subirContrato"></button>
+            </div>
+        </div>
+        
+    </script>
+    
+     <!-- View contratos tipo y sucursal -->
+    <div id="view-tipo-sucursal" data-role="view"
+        data-transition="fade"        
+        data-title="Nuevo contrato"
+        data-model="app.sucursalContratoService.viewModel"
+        data-show="app.sucursalContratoService.viewModel.sucursales">
+         <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" class="btn_lft"><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-bind="click:sucursalesSubmit" data-transition="fade" class="btn_rgh" data-role="button" data-align="right"><img class="icon_right" src="images/right.png"></a>
+            </div>
+        </div> 
+        <div class="centrado">       
+            <form id="formSucursal">
+                <div>
+                    <label class="label">Sucursal</label>
+                    <select id="sucursales" class="selects" data-validetta="required">
+                        <option value="">Selecciona</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="label">Tipo de plan</label>
+                    <select id="tipoContrato" class="selects" data-validetta="required">
+                        <option value="">Selecciona</option>
+                    </select>
+                </div>
+                <a href="#view-clausuras"  class="boton-clausulas"  data-role="button"><img src="images/clausula.png">Ver clausulas del contrato</a>
+            <!-- el boton de arriba es provicional para que cambie de pantalla<input type="submit" class="boton-primario" value="Ingresar">-->
+        
+            </form>
+        </div>
+     </div>
+     <!-- View contratos contratante -->
+    <div id="view-contratante" data-role="view"
+        data-transition="fade"       
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel"
+        data-init="app.contratanteService.viewModel.iniciarContratante"
+        data-show="app.contratanteService.viewModel.mostrar">
+         <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-align="left"class="btn_lft"><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-bind="click:agregar" data-role="button" data-align="right" class="btn_rgh"><img class="icon_right" src="images/right.png"></a>
+            </div>
+        </div>
+        <div class="tituloFranja">
+            <p>Datos del contratante</p>
+        </div>
+        <div class="centrado">            
+            <form class="formularios" id="formContrato">
+                <div>
+                    <label class="label">Tipo de documento</label>
+                    <select id="tipoDocumento" class="selects" data-validetta="required">
+                        <option value="">Selecciona</option>
+                        <option value="1">Cédula</option>
+                        <option value="2">Tarjeta de identidad</option>
+                        <option value="3">Cedula extranjera</option>
+                        <option value="4">NIT</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="label">Número de documento</label>
+                    <input type="number" id="numeroDocumento" class="inputStyle" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Razón social o nombre</label>
+                    <input type="text" id="nombre" class="inputStyle" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Télefono</label>
+                    <input type="number" id="telefono" class="inputStyle" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Dirección</label>
+                    <input type="text" id="direccion" class="inputStyle" data-validetta="required">
+                </div>
+                <!--<div>
+                    <label class="label">Ciudad/municipio</label>
+                    <input type="text" id="ciudad" class="inputStyle" data-validetta="required">
+                </div>-->
+                <div>
+                    <label class="label">Ciudad/minicipio</label>
+                    <select id="ciudad" class="selects ciudadList" data-validetta="required">
+                        <option value="">Selecciona</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="label">Correo electrónico</label>
+                    <input type="email" id="email" class="inputStyle" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Parentesco</label>
+                    <select id="afiParentesco" class="selects parentescoList" data-validetta="required">
+                        <option value="">Selecciona</option>
+                    </select>               
+                </div>
+             </form>
+        </div>
+     </div>
+    
+     <!-- View contratos afiliado -->
+    <div id="view-afiliado" data-role="view"
+        data-transition="fade"
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel"
+        data-init="app.contratanteService.viewModel.iniciarAfiliado"
+        data-show="app.contratanteService.viewModel.mostrarId" data-use-native-scrolling="true">
+        <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" class="btn_lft"><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-role="button" data-bind="click: agregarAfiliado" data-align="right" class="btn_rgh"><img class="icon_right" src="images/right.png"></a>
+            </div>
+        </div>
+        <div class="tituloFranja">
+            <p>Datos del afiliado principal</p>
+        </div>
+        <div class="centrado">            
+            <form class="formularios" id="formAfiliado">
+                <div class="notificacionAnterior">
+                <label class="label2">Deseas usar los datos del contratante?</label><input data-change="app.contratanteService.viewModel.onChange" type="checkbox" id="switchDatos" data-role="switch" data-off-label="No" data-on-label="Si" data-checked="false" />
+                </div>
+                <div>
+                    <label class="label">Tipo de documento</label>
+                    <select id="tipoDocAfi" class="selects" data-validetta="required">
+                        <option value="">Selecciona</option>
+                        <option value="1">Cédula</option>
+                        <option value="2">Tarjeta de identidad</option>
+                        <option value="3">Cedula extranjera</option>
+                        <option value="4">NIT</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="label">Número de documento</label>
+                    <input class="inputStyle" id="documentoAfi" type="tel" data-validetta="required">
+                </div>
+                <div>
+                <label class="label">Sexo</label>
+                <select class="selects" id="sexoAfi" data-validetta="required">
+                    <option value="">Selecciona</option>
+                    <option value="H">Masculino</option>
+                    <option value="M">Femenino</option>                
+                </select>
+                </div>
+                <div>
+                    <label class="label">Apellidos y nombre</label>
+                    <input class="inputStyle" id="nombresAfi" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Correo electrónico</label>
+                    <input class="inputStyle" id="correoAfi" type="email" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Télefono</label>
+                    <input class="inputStyle "  id="telefonoAfi" type="tel" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label" >Dirección</label>
+                    <input class="inputStyle" id="direccionAfi" data-validetta="required">
+                </div>
+                <!--<div>
+                    <label class="label" >Ciudad/municipio</label>
+                    <input class="inputStyle" id="ciudadAfi"  data-validetta="required">
+                </div>-->
+                <div>
+                    <label class="label">Ciudad/minicipio</label>
+                    <select id="ciudadAfi" class="selects ciudadList" data-validetta="required">
+                        <option value="">Selecciona</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="label" >Fecha de nacimiento</label>
+                    <input class="inputStyle" readonly="true" type="text" id="fechaAfi" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Estado civil</label>
+                    <select class="selects" id="estadoAfi" data-validetta="required">
+                        <option value="">Selecciona</option>
+                        <option value="S">Soltero</option>
+                        <option value="C">Casado</option> 
+                        <option value="D">Divorciado</option>
+                        <option value="U">Unión Libre</option>
+                        <option value="V">Viudo</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="label">Ocupación</label>
+                    <input class="inputStyle" id="ocupacionAfi" data-validetta="required">
+                </div>
+             </form>
+        </div>
+     </div>
+    
+     <!-- View contrato beneficiarios -->
+    <div id="view-beneficiarios" data-role="view"
+        data-transition="fade"
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel"
+        data-show="app.contratanteService.viewModel.consultarBeneficiarios">
+        <div data-role="header">
+           <div data-role="navbar">
+               <a data-role="backbutton" data-align="left" class="btn_lft"><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a href="#view-agregar-beneficiario" data-transition="fade" data-role="button" data-align="right" class="btn_rgh"><img id="agregarUsuario" data-bind="click:afiliadosContador" class="icon_right agregar_right" src="images/agregar.png"></a><a href="#view-valores" data-transition="fade" data-role="button" data-align="right"><img class="icon_right" src="images/right.png"></a>
+            </div>
+        </div>
+        <div class="tituloFranja">
+            <p>Beneficiarios</p>
+        </div>
+        <div class="centrado">            
+           <p style="margin-top:10em;" class="sub_texto" id="no-beneficiarios">Aun no existen beneficiarios</p>
+            <div id="contenedorBeneficiarios"></div>            
+        </div>
+     </div>
+    <script id="template_beneficiarios" type="text/x-kendo-template">
+        <h3 class="nombre_beneficiario"><img class="icon_text icon_right_margin" src="images/user.png">#: primer_apellido # #: segundo_apellido # #: nombres #</h3>
+        <h4 class="documento_beneficiario"><img class="icon_text icon_right_margin" src="images/id.png">Documento: #: documento # - #: parentesco.parentesco #</h4>
+    </script>
+    
+    <!-- View agregar beneficiario -->
+    <div id="view-agregar-beneficiario" data-role="view"
+        data-transition="fade"
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel"
+        data-init="app.contratanteService.viewModel.iniciarBeneficiario"
+        data-show="app.contratanteService.viewModel.mostrarEdad">
+        <div class="tituloFranja">
+            <p>Beneficiarios</p>
+        </div>
+       <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" ><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a id="guardarBeneficiario" data-bind="click: agregarBeneficiario" data-role="button" data-align="right"><img class="icon_guardar" src="images/guardar.png"></a>
+            </div>
+       </div>
+        <div class="centrado">            
+            <form class="formularios" id="formBeneficiario">
+                <div>
+                    <label class="label">Tipo de beneficiario</label>
+                    <select class="inputStyle" id="tipoBen" type="text" data-validetta="required">
+                        <option value="2">Adicional</option>
+                        <option value="1">Principal</option>
+                        
+                    </select>
+                </div>
+                <div>
+                    <label class="label">Número de documento</label>
+                    <input class="inputStyle" id="documentoBen" type="number" data-validetta="required">                
+                </div>
+                <div>
+                    <label class="label">Primer Apellido</label>
+                    <input class="inputStyle" id="primerApellidoBen" type="text" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Segundo apellido</label>
+                    <input class="inputStyle" id="segundoApellidoBen"type="text" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Nombres</label>
+                    <input class="inputStyle" id="nombresBen" type="text" data-validetta="required">
+                </div>
+                <div>
+                    <label class="label">Fecha de nacimiento</label>
+                    <input class="inputStyle" readonly="true" id="fechaNacimientoBen" type="text" >
+                </div>
+                <div>
+                    <label class="label">Parentesco</label>
+                    <select class="inputStyle parentescoList" id="parentescoBen" type="text" data-validetta="required">
+                         <option value="">Selecciona</option>
+                    </select>
+                </div>
+             </form>
+        </div>
+     </div>
+    
+    
+    <!-- View contratos valores -->
+    <div id="view-valores" data-role="view"
+        data-transition="fade"
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel"
+        data-init="app.contratanteService.viewModel.initValores"
+        data-show="app.contratanteService.viewModel.consultarValores">
+        <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" class="btn_lft"><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-bind="click: agregarValores" data-role="button" data-align="right" class="btn_rgh"><img class="icon_right" src="images/right.png"></a>
+            </div>
+       </div> 
+        <div class="tituloFranja">
+            <p>Valores y observaciones</p>
+        </div>
+        <div class="centrado">            
+            <form class="formularios">                
+                <label class="label">Valor cuota</label>
+                <input class="inputStyle precio" id="cuotaVlr" type="tel" value="0">                
+                <label class="label">Valor adicional</label>
+                <input class="inputStyle precio" id="adicionalVlr" type="tel" value="0">
+                <label class="label">Modalidad de pago</label>
+                <select class="inputStyle" id="modalidadVlr">
+                    <option value="">Selecciona</option>
+                    <option value="Mensual">Mensual</option>
+                    <option value="Trimestral">Trimestral</option>
+                    <option value="Semestral">Semestral</option>
+                    <option value="Anual">Anual</option>
+                </select>
+                <label class="label">Valor total cuota</label>
+                <input class="inputStyle" id="total_cuotaVlr" type="tel">
+                <label class="label">Observaciones</label>
+                <textarea class="textarea" id="observacionesVlr"></textarea>      
+             </form>
+        </div>
+     </div>
+    
+    <!-- View firma asesor -->
+    <div id="view-firma-asesor" data-role="view"
+        data-transition="fade"
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel"
+        data-show
+                 ="app.contratanteService.viewModel.initFirmaAsesor">
+        <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" class="btn_lft"><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-bind="click: guardarFirmaAsesor" data-role="button" data-align="right" class="btn_rgh"><img class="icon_right" src="images/right.png"></a>
+           </div>
+       </div> 
+        <div class="tituloFranja">            
+            <p>Firma Asesor</p>
+        </div>
+        <div class="centrado">
+            <div id="firma"></div>
+            <button data-bind="click:limpiar" class="limpiar">limpiar</button>
+        </div>
+     </div>
+    
+    <!-- View firma cliente -->
+    <div id="view-firma-cliente" data-role="view"
+        data-transition="fade"
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel"
+        data-show="app.contratanteService.viewModel.initFirmaCliente">
+        <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" class="btn_lft"><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a  data-bind="click: guardarFirmaCliente" data-role="button" data-align="right" class="btn_rgh"><img class="icon_right" src="images/right.png"></a>
+            </div>
+       </div> 
+        <div class="tituloFranja">
+            <p>Firma Cliente</p>
+        </div>
+        <div class="centrado">
+            <div id="firmaC"></div>
+            <button data-bind="click:limpiarC" class="limpiar">limpiar</button>
+        </div>
+     </div>
+    
+     <!-- View adjuntar documentos -->
+    <div id="view-adjuntar-documentos" data-role="view"
+        data-transition="fade"
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel"
+        data-init="app.contratanteService.viewModel.iniciarDocumentos"
+        data-use-native-scrolling="true">
+        <div data-role="header">
+           <div data-role="navbar">              
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-bind="click: adjuntarDocumentos" data-role="button" data-align="right" class="btn_rgh"><img class="icon_right" src="images/right.png"></a>
+            </div>
+       </div> 
+        <div class="tituloFranja">
+            <p>Adjuntar Archivos</p>
+        </div>
+        <div class="centrado">
+            <ul class="adjuntar">
+                <li><img src="images/adjuntar.png" id="1"></li>
+                <li><img src="images/adjuntar.png" id="2"></li>
+                <li><img src="images/adjuntar.png" id="3"></li>
+                <li><img src="images/adjuntar.png" id="4"></li>
+                <li><img src="images/adjuntar.png" id="5"></li>
+                <li><img src="images/adjuntar.png" id="6"></li>
+                <li><img src="images/adjuntar.png" id="7"></li>
+                <li><img src="images/adjuntar.png" id="8"></li>
+                <li><img src="images/adjuntar.png" id="9"></li>
+                <li><img src="images/adjuntar.png" id="10"></li>
+                <li><img src="images/adjuntar.png" id="11"></li>
+                <li><img src="images/adjuntar.png" id="12"></li>
+            </ul>
+        </div>
+     </div>
+    
+    <!-- View contrato finalizado -->
+    <div id="view-finalizado" data-role="view"
+        data-transition="fade"
+        data-title="Nuevo contrato"
+        data-model="app.contratanteService.viewModel">
+        <div data-role="header">
+           <div data-role="navbar">
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a data-bind="click:enviarCorreo" data-transition="fade" data-role="button" data-align="right" class="btn_rgh"><img class="icon_right" src="images/right.png"></a>
+            </div>
+        </div>
+        <div class="tituloFranja">
+            <p>Contrato creado</p>
+        </div>
+        <div class="centrado">
+            <div class="icono_centro">
+                <img class="icono_finalizado" src="images/finalizado.png">
+                <p class="sub_texto">El contrato se ha firmado correctamente</p>
+            </div>
+        </div>
+     </div>
+    
+    <!-- View clausulas -->
+    <div id="view-clausuras" data-role="view"
+        data-transition="fade"
+        data-layout="layout-atras"
+        data-title="Cláusulas">
+        <div class="tituloFranja">
+            <p id="tituloClausula"></p>
+        </div>
+        <div class="centrado" id="textoClausula">            
+            
+        </div>
+     </div>
+    
+    <!-- View ver contrato -->
+    <div id="view-ver-contrato" data-role="view"
+        data-transition="fade"
+        data-title="contrato"
+        data-model="app.verContratoService.viewModel"
+        data-show="app.verContratoService.viewModel.mostrar"
+        >
+        <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-bind="click:borrar" data-align="left" ><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+           </div>
+        </div>
+        <div class="tituloFranja">
+            <p>Ver Contrato</p>
+        </div>
+        <div id="datosContrato" class="centrado fontStyle">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="trhead"><h2 class="text_edit">Datos básicos</h2><a href="#view-editar-contrato"><img class="icon_edit" src="images/edit.png"></a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><th><strong>Id:</strong><div id="idContratoInt"></div></th></tr>
+                    <tr><th><strong>Asesor:</strong><div id="asesorContratoInt"></div></th></tr>
+                    <tr><th><strong>Tipo de plan:</strong><div id="tipoContratoInt"></div></th></tr>
+                    <tr><th><strong>Sucursal:</strong><div id="sucursalContratoInt"></div></th></tr>
+                    
+                </tbody> 
+                <thead>
+                    <tr>
+                        <th class="trhead"><h2>Datos del Contratante</h2></th>
+                    </tr>
+                </thead>       
+                    <tr><th><strong>Tipo de documento:</strong><div id="tipoContratanteInt"></div></th></tr>
+                    <tr><th><strong>Número documento:</strong><div id="numeroContratanteInt"></div></th></tr>
+                    <tr><th><strong>Razón social/ Nombre:</strong><div id="nombreContratanteInt"></div></th></tr>
+                    <tr><th><strong>Teléfono:</strong><div id="telefonoContratanteInt"></div></th></tr>
+                    <tr><th><strong>Dirección:</strong><div id="direccionContratanteInt"></div></th></tr>
+                    <tr><th><strong>Cuidad/Municipio:</strong><div id="ciudadContratanteInt"></div></th></tr>
+                    <tr><th><strong>Correo electrónico:</strong><div id="correoContratanteInt"></div></th></tr>
+                    <tr><th><strong>Parentesco:</strong><div id="parentescoContratanteInt"></div></th></tr>
+                    
+                <thead>
+                    <tr>
+                        <th class="trhead"><h2>Datos del afiliado principal</h2></th>
+                    </tr>
+                </thead>            
+                    <tr><th><strong>Tipo de documento:</strong><div id="tipoAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Número de documento:</strong><div id="numeroAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Sexo:</strong><div id="sexoAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Apellidos y Nombre:</strong><div id="nombreAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Correo electrónico:</strong><div id="correoAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Teléfono:</strong><div id="telefonoAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Dirección:</strong><div id="direccionAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Ciudad:</strong><div id="ciudadAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Fecha de nacimiento:</strong><div id="fechaNaAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Estado civil:</strong><div id="estadoCivAfiliadoInt"></div></th></tr>
+                    <tr><th><strong>Ocupación:</strong><div id="ocupacionAfiliadoInt"></div></th></tr>
+                <thead>
+                    <tr>
+                        <th class="trhead"><h2>Beneficiarios</h2></th>
+                    </tr>
+                </thead>            
+                    <tr><th><div id="beneficiariosContratoInt"></div></th></tr>
+                <thead>
+                      <tr><th class="trhead"><h2>Valores</h2></th></tr>
+                </thead>
+                    <tr><th><strong>Valor de la cuota:</strong><div id="cuotaValorInt"></div></th></tr>
+                    <tr><th><strong>Valor adicional:</strong><div id="adicionalValorInt"></div></th></tr>
+                    <tr><th><strong>Total de la cuota:</strong><div id="totalValorInt"></div></th></tr>           
+                    <tr><th><strong>Modalidad de Pago:</strong><div id="modalidadValorInt"></div></th></tr>
+                    <tr><th><strong>Observaciones:</strong><div id="observacionesValorInt"></div></th></tr>
+                 <thead>
+                      <tr><th class="trhead"><h2>Documentos</h2></th></tr>
+                </thead>                       
+                        <tr><th><div class="centrado">
+                            <ul class="vista-documentos">
+                                <li><img id="img1DocumentoInt"></li>
+                                <li><img id="img2DocumentoInt"></li>
+                                <li><img id="img3DocumentoInt"></li>
+                                <li><img id="img4DocumentoInt"></li>
+                                <li><img id="img5DocumentoInt"></li>
+                                <li><img id="img6DocumentoInt"></li>
+                                <li><img id="img7DocumentoInt"></li>
+                                <li><img id="img8DocumentoInt"></li>
+                                <li><img id="img9DocumentoInt"></li>
+                                <li><img id="img10DocumentoInt"></li>
+                                <li><img id="img11DocumentoInt"></li>
+                                <li><img id="img12DocumentoInt"></li>
+                                
+                            </ul>
+                        </div></th></tr>
+                 <thead>
+                      <tr><th class="trhead"><h2>Firmas</h2></th></tr>
+                </thead>                       
+                        <tr><th><div class="centrado">
+                            <ul class="vista-documentos">                                
+                                <li><strong>Firma Cliente:</strong><img id="img1FirmaClienteInt"></li>                                
+                                <li><strong>Firma Asesor:</strong><img id="img2FirmaAsesorInt"></li>                                
+                            </ul>
+                        </div></th></tr>
+                
+                
+            </table>    
+        </div>
+     </div>
+    
+    <!-- View editar contrato -->
+    <div id="view-editar-contrato" data-role="view"
+        data-transition="fade"
+        data-title="contrato"
+        data-model="app.verContratoService.viewModel"
+        data-show="app.verContratoService.viewModel.editarContrato"
+        data-init="app.verContratoService.viewModel.CargareditarContrato"
+        >
+        <div data-role="header">
+           <div data-role="navbar">
+                <a data-role="backbutton" data-bind="click:borrar" data-align="left" ><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a  data-bind="click: actualizarDatos" data-role="button" data-align="right"><img class="icon_guardar" src="images/guardar.png"></a>
+               
+           </div>
+        </div>
+        <div class="tituloFranja">
+            <p>Ver Contrato</p>
+        </div>
+        <div id="editarContrato" class="centrado fontStyle">
+            <table>                
+                <thead>
+                    <tr>
+                        <th class="trhead"><h2>Datos del Contratante</h2></th>
+                    </tr>
+                </thead>                          
+                    <tr><th><strong>Número documento:</strong><input type="text" id="inputNumeroContratanteInt"></th></tr>
+                    <tr><th><strong>Razón social/ Nombre:</strong><input id="inputNombreContratanteInt"></th></tr>
+                    <tr><th><strong>Teléfono:</strong><input id="inputTelefonoContratanteInt"></th></tr>
+                    <tr><th><strong>Dirección:</strong><input id="inputDireccionContratanteInt"></th></tr>                    
+                    <tr><th><strong>Ciudad/Municipio:</strong>
+                        <select id="inputCiudadContratanteInt" class="selects2 ciudadList">                            
+                        </select>                        
+                    </th></tr>
+                    <tr><th><strong>Correo electrónico:</strong><input id="inputCorreoContratanteInt"></th></tr>
+                    <!--<tr><th><strong>Parentesco:</strong><input id="inputParentescoContratanteInt"></th></tr>-->
+                    <tr><th><strong>Parentesco:</strong>
+                        <select id="inputParentescoContratanteInt" class="selects2 parentescoList">                            
+                        </select>                        
+                    </th></tr>
+                <thead>
+                    <tr>
+                        <th class="trhead"><h2>Datos del afiliado principal</h2></th>
+                    </tr>
+                </thead>            
+                    <tr><th><strong>Número de documento:</strong><input id="inputNumeroAfiliadoInt"></th></tr>                   
+                    <tr><th><strong>Apellidos y Nombre:</strong><input id="inputNombreAfiliadoInt"></th></tr>
+                    <tr><th><strong>Correo electrónico:</strong><input id="inputCorreoAfiliadoInt"></th></tr>
+                    <tr><th><strong>Teléfono:</strong><input id="inputTelefonoAfiliadoInt"></th></tr>
+                    <tr><th><strong>Dirección:</strong><input id="inputDireccionAfiliadoInt"></th></tr>
+                    <tr><th><strong>Ciudad/Municipio:</strong>    
+                    <tr><th>
+                        <select id="inputCiudadAfiliadoInt" class="selects2 ciudadList">                            
+                        </select>                        
+                    </th></tr>
+                    <tr><th><strong>Estado civil:</strong>
+                    <select class="selects2" id="inputEstadoCivAfiliadoInt">    
+                    </select></th></tr>
+                    <tr><th><strong>Ocupación:</strong><input id="inputOcupacionAfiliadoInt"></th></tr>          
+                   
+            </table>    
+        </div>
+     </div>
+    
+         <!-- Layout agregar Contratos-->
+    <div data-role="layout" data-id="layout-agregar">
+        <div data-role="header">
+            <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" ><img class="icon_logo" src="images/icon_logo.png"></a>
+                 <span class="view-tittle"data-role="view-title"></span>
+                <a href="#view-tipo-sucursal" data-transition="fade" data-role="button" data-align="right"><img class="icon_logo2" src="images/agregar.png"></a>
+            </div>
         </div>
     </div>
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
-    <script type="text/javascript">
-        app.initialize();
-    </script>
+        <!-- Layout general-->
+    <div data-role="layout" data-id="layout-general">
+        <div data-role="header">
+            <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" ><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>
+                <a href="#view-contratante" data-transition="fade" data-role="button" data-align="right"><img class="icon_right" src="images/right.png"></a>
+            </div>
+        </div>
+    </div>
+        <!-- Layout atras-->
+    <div data-role="layout" data-id="layout-atras">
+        <div data-role="header">
+            <div data-role="navbar">
+                <a data-role="backbutton" data-align="left" ><img class="icon_left" src="images/left.png"></a>
+                <img class="icon_logoG" src="images/icon_logo.png"><span class="view-tittle"data-role="view-title"></span>                
+            </div>
+        </div>
+    </div>
 </body>
-
 </html>
