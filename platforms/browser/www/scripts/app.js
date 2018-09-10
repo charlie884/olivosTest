@@ -19,66 +19,48 @@
     app.guardarArchivo = function(info,nombre,img){
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
             console.log('gotFS');
-            console.log('Guardar en '+fileSystem.root);
-            console.log('Guardando archivo '+nombre+'.txt');
-            console.log('Guardando info '+info);
+            console.log('Guardar en '+fileSystem.root.fullPath);
+            console.log('Guardando archivo '+nombre);
             fileSystem.root.getFile(nombre+".txt", {create: true, exclusive: false}, function(fileEntry){
                 fileEntry.createWriter(function(writer){
-                    //fileEntry.remove();
-                    //writer.seek(0); //Reiniciar archivo desde el inicio si ya existía
+                    // fileEntry.remove();
+                    writer.seek(0); //Reiniciar archivo desde el inicio si ya existía
                     //writer.truncate();
-                    writer.onwriteend = function(evt) {
-                        console.log(evt);
+                    writer.onwriteend = function(evt) { 
                         console.log("Archivo guardado exitosamente");
-                    };
-                    //console.log('Tipo de info: '+typeof(info));
-                    //console.log(info);
-                    //console.log(info.length);
-                    //console.log('string info '+JSON.stringify(info));
-                    //writer.write(JSON.stringify(info));
-                    var dataObj = new Blob([JSON.stringify(info)], { type: 'text/plain' });
-                    writer.write(dataObj);
+                        console.log(evt);
+                    }; 
+                    console.log('Tipo de info: '+typeof(info));
+                    console.log(info);
+                    console.log(info.length);
+                    writer.write(JSON.stringify(info));
                     window.localStorage.setItem(nombre,true);
-                }, function(error){
-                    console.log(error);
-                });
-            }, function(error){
-                    console.log(error);
-                });
-        }, function(error){
-            console.log(error);
-        });
+                }, app.fail);
+            }, app.fail);
+        }, app.fail);
     }
     app.leerArchivo = function(nombre,callBack){
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
-            console.log('gotFS');
-            console.log(nombre);
-            console.log('Leido desde '+fileSystem.root);
-            fileSystem.root.getFile(nombre+".txt", {create: true, exclusive: false}, function(fileEntry){
+            console.log('gotFS'); 
+            console.log('Leido desde '+fileSystem.root.fullPath);
+            fileSystem.root.getFile(nombre+".txt", {create: false, exclusive: false}, function(fileEntry){
                 fileEntry.file(function(file){
                     var reader = new FileReader();
                     reader.onloadend = function(evt) {
                         console.log("Leído como texto");
-                        console.log(evt.target);
-                        console.log(file);
-                        var objeto = JSON.parse(evt.target.result);
+                        //console.log(fileSystem.root);
+                        var objeto = JSON.parse(evt.target.result); 
                         callBack(objeto);
                         
                     };
                     reader.readAsText(file);
-                }, function(error){
-                       console.log(error);
-                   });
-            }, function(error){
-                   console.log(error);
-               });
-        }, function(error){
-           console.log(error);
-       });
+                }, app.fail); 
+            }, app.fail);
+        }, app.fail);
     }
     app.eliminarArchivo = function(nombre){
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
-            console.log('gotFS');
+            console.log('gotFS'); 
             console.log('Leido desde '+fileSystem.root.fullPath);
             fileSystem.root.getFile(nombre+".txt", {create: false, exclusive: false}, function(fileEntry){
                 fileEntry.remove(function (file) {
@@ -88,12 +70,8 @@
                 }, function () {
                     console.log("fichier n'existe pas");
             });
-            },  function(error){
-                    console.log(error);
-                });
-        },  function(error){
-            console.log(error);
-        });
+            }, app.fail);
+        }, app.fail);
     }
     app.descargarImagen = function(imagen,nombre,extension){
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
@@ -128,16 +106,12 @@
                             fileWriter.write(blob);
                         });
 
-                    },  function(error){
-                        console.log(error);
-                    });
+                    }, app.fail);
                 }
             };
             xhr.send();
 
-        }, function(error){
-            console.log(error);
-        });
+        }, app.fail);
     }
     app.fail = function(e){
         console.log('Error');
@@ -145,8 +119,6 @@
     }
     
     document.addEventListener("deviceready", function () {
-        console.log('Cordova File');
-        console.log(cordova.file);
         
         if(window.localStorage.getItem('usuario')){
             app.application = new kendo.mobile.Application(document.body, { skin: "flat", initial:"view-contratos"});
