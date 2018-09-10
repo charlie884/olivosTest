@@ -15,12 +15,12 @@
                     data:{id:idContrato}
     			}) 
     			.done(function(contrato) {
-                    console.log('contrato arr: '+contrato.tipo_contrato);
+                    console.log('contrato arr: '+contrato.tipo_contrato.tipo_de_contrato);
                    
                     $('#idContratoInt').html(contrato.id);
                     $('#asesorContratoInt').html(contrato.asesor.name);                    
     				$('#sucursalContratoInt').html(contrato.sucursal_nombre.sucursal);
-                    $('#tipoContratoInt').html(contrato.tipo_contrato); 
+                    $('#tipoContratoInt').html(contrato.tipo_contrato.tipo_de_contrato); 
                     if(contrato.tipo_de_documento==1){
                         $('#tipoContratanteInt').text('Cédula');
                     }else if(contrato.tipo_de_documento==2){

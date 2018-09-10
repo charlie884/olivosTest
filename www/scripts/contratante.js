@@ -638,7 +638,8 @@
                 centsLimit: 0
             });
             var cuota = 0;
-            var adicional = 0;
+            // var adicional = 0;
+            // jQuery('#adicionalVlr').val(0);
             $('#cuotaVlr').change(function() {
                 cuota = parseInt($(this).val());
                 adicional = parseInt($('#adicionalVlr').val());
@@ -650,16 +651,32 @@
                 $('#total_cuotaVlr').val(cuota+adicional);
             });
             $('#modalidadVlr').change(function(){
+                var valorAdicional = jQuery('#adicionalVlr').val();
+                console.log('add: '+valorAdicional);
+                if (valorAdicional == '') {
+                    var valorAdicional = 0;
+                }else{
+                    var valorAdicional = parseInt($('#adicionalVlr').unmask());
+                }
                 var modalidad = jQuery(this).val();
                 var valorCuota = parseInt($('#cuotaVlr').unmask());
-                var valorAdicional = parseInt($('#adicionalVlr').unmask());
+                // var valorAdicional = parseInt($('#adicionalVlr').unmask());
+                console.log('adicional: '+valorAdicional);
                 if(modalidad === 'Mensual'){
+                    console.log('cuota: '+valorCuota);
+                    console.log('cuota: '+valorAdicional);
                     $('#total_cuotaVlr').val( (valorCuota+valorAdicional) * 1 );
                 }else if(modalidad === 'Trimestral'){
+                    console.log('cuota: '+valorCuota);
+                    console.log('cuota: '+valorAdicional);
                     $('#total_cuotaVlr').val( (valorCuota+valorAdicional) * 3 );
                 }else if(modalidad === 'Semestral'){
+                    console.log('cuota: '+valorCuota);
+                    console.log('cuota: '+valorAdicional);
                     $('#total_cuotaVlr').val( (valorCuota+valorAdicional) * 6 );
                 }else if(modalidad === 'Anual'){
+                    console.log('cuota: '+valorCuota);
+                    console.log('cuota: '+valorAdicional);
                     $('#total_cuotaVlr').val( (valorCuota+valorAdicional) * 12 );
                 }
                 $('#total_cuotaVlr').priceFormat({
