@@ -541,6 +541,8 @@
                             data:datos
                             
                         }).done(function(beneficiario){
+
+                            $('#guardarBeneficiario').show();
                             console.log(datos);
                             if(beneficiario){
                                 app.application.navigate('#view-beneficiarios','fade');
@@ -554,6 +556,10 @@
                             }
                             
                         }).error(function(){ 
+                                
+                            setTimeout(function(){
+                                $('#guardarBeneficiario').show();
+                            },5000);
                             var consecutivo = parseInt(window.localStorage.getItem('consecutivo'));
                             datos.consecutivo = consecutivo;
                             datos.parentesco = {};
@@ -627,7 +633,8 @@
             }
         },
         agregarBeneficiario:function(){
-             $('#formBeneficiario').submit();             
+             $('#formBeneficiario').submit();
+             $('#guardarBeneficiario').hide();             
             console.log($('#parentescoBen').val());
         },
         initValores: function(){
