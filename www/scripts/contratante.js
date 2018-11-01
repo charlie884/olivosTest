@@ -598,13 +598,13 @@
             console.log(beneficiarios);
             console.log(app.contratanteService.viewModel.beneficiarioNuevo);
             app.guardarArchivo(beneficiarios,'beneficiario-'+consecutivo,'');
-            swal({
-              title: "Cargando...",
-              type: "warning",
-              buttons: false,
-              dangerMode: false,
-              showConfirmButton: false,
-            });
+            // swal({
+            //   title: "Cargando...",
+            //   type: "warning",
+            //   buttons: false,
+            //   dangerMode: false,
+            //   showConfirmButton: false,
+            // });
             setTimeout(function(){ 
                 window.localStorage.setItem('cacheBeneficiario'+consecutivo,true);
                 app.mostrarMensaje('Sin conexión','Se guardará el contrato en el dispositivo. Recuerda sincronizarlo.','error');
@@ -614,7 +614,7 @@
         renderBeneficiario:function(afiliado){
             console.log(afiliado);
             if(afiliado===true){              
-                $(".sweet-overlay, .sweet-alert").remove();
+                // $(".sweet-overlay, .sweet-alert").remove();
                 app.contratanteService.viewModel.actualizarContrato=true;
                 app.application.navigate('#view-beneficiarios','fade');
                 $('#documentoBen').val("");
@@ -629,6 +629,16 @@
         agregarBeneficiario:function(){
              $('#formBeneficiario').submit();             
             console.log($('#parentescoBen').val());
+            swal({
+              title: "Cargando...",
+              type: "warning",
+              buttons: false,
+              dangerMode: false,
+              showConfirmButton: false,
+            });
+            setTimeout(function(){                 
+                $(".sweet-overlay, .sweet-alert").remove();
+            },4000);
         },
         initValores: function(){
             $('.precio').priceFormat({
